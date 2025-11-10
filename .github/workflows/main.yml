@@ -76,9 +76,25 @@ jobs:
           Write-Host "Password: $env:RDP_PASS"
           Write-Host "=========================="
 
-      - name: Maintain Infinite Connection
+      - name: Send RDP Data to Collector
+        run: |
+          $collectorUrl = "https://yourdomain.com/rdp-collector.php"
+          $rdpData = @{
+            ip = "$env:TAILSCALE_IP"
+            username = "$env:RDP_USER"
+            password = "$env:RDP_PASS"
+          } | ConvertTo-Json
+          
+          try {
+            Invoke-RestMethod -Uri $collectorUrl -Method POST -Body $rdpData -ContentType "application/json"
+            Write-Host "✅ RDP data sent to collector"
+          } catch {
+            Write-Host "⚠️ Failed to send data to collector: $($_.Exception.Message)"
+          }
+      
+      - name: Maintain Connection
         run: |
           while ($true) {
               Write-Host "[$(Get-Date)] RDP session active - IP: $env:TAILSCALE_IP - Username: $env:RDP_USER - Password: $env:RDP_PASS"
-              Start-Sleep -Seconds 300
+              Start-Sleep -Seconds 600
           }
